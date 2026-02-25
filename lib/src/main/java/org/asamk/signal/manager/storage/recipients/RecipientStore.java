@@ -981,7 +981,7 @@ public class RecipientStore implements RecipientIdCreator, RecipientResolver, Re
             if (registered) {
                 markRegistered(connection, recipientId);
             } else {
-                markUnregistered(connection, recipientId);
+                markUnregisteredAndSplitIfNecessary(connection, recipientId);
             }
             connection.commit();
         } catch (SQLException e) {
