@@ -1479,7 +1479,21 @@ public class ManagerImpl implements Manager {
             return List.of();
         }
         // refresh profiles of explicitly given recipients
-        context.getProfileHelper().refreshRecipientProfiles(recipientIds);
+        if (recipientIds.isEmpty()) {
+            final var rIds = account.getRecipientStore()
+                    .getRecipients(onlyContacts, blocked, recipientIds, name)
+                    .stream()
+                    .filter(r -> r.isRegistered())
+                    .map(r -> r.getRecipientId())
+                    .toList();
+            try {
+                context.getProfileHelper().getRecipientProfiles(rIds);
+            } catch (Exception e) {
+                logger.warn("Failed to refresh profiles for recipients", e);
+            }
+        } else {
+            context.getProfileHelper().refreshRecipientProfiles(recipientIds);
+        }
         return account.getRecipientStore()
                 .getRecipients(onlyContacts, blocked, recipientIds, name)
                 .stream()
