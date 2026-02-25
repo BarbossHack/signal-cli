@@ -337,15 +337,16 @@ public class ContactRecordProcessor extends DefaultStorageRecordProcessor<Signal
     public int compare(SignalContactRecord lhsRecord, SignalContactRecord rhsRecord) {
         final var lhs = lhsRecord.getProto();
         final var rhs = rhsRecord.getProto();
+        final var lhsAci = ACI.parseOrNull(lhs.aci, lhs.aciBinary);
+        final var rhsAci = ACI.parseOrNull(rhs.aci, rhs.aciBinary);
+        final var lhsPni = PNI.parseOrNull(lhs.pni, lhs.pniBinary);
+        final var rhsPni = PNI.parseOrNull(rhs.pni, rhs.pniBinary);
         if ((
-                (!lhs.aci.isEmpty() && Objects.equals(lhs.aci, rhs.aci)) || (
-                        lhs.aciBinary.size() != 0 && Objects.equals(lhs.aciBinary, rhs.aciBinary)
-                )
+                (lhsAci != null && Objects.equals(lhsAci, rhsAci))
         ) || (
                 !lhs.e164.isEmpty() && Objects.equals(lhs.e164, rhs.e164)
         ) || (
-                (!lhs.pni.isEmpty() && Objects.equals(lhs.pni, rhs.pni) && lhs.pniBinary == rhs.pniBinary)
-                        || (lhs.pniBinary.size() != 0 && Objects.equals(lhs.pniBinary, rhs.pniBinary))
+                (lhsPni != null && Objects.equals(lhsPni, rhsPni))
         )) {
             return 0;
         } else {
