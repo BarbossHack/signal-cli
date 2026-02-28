@@ -104,6 +104,8 @@ pub trait Rpc {
         #[allow(non_snake_case)] allRecipients: bool,
         blocked: Option<bool>,
         name: Option<String>,
+        detailed: bool,
+        internal: bool,
     ) -> Result<Value, ErrorObjectOwned>;
 
     #[method(name = "listDevices", param_kind = map)]
@@ -141,6 +143,7 @@ pub trait Rpc {
         account: Option<String>,
         voice: bool,
         captcha: Option<String>,
+        reregister: bool,
     ) -> Result<Value, ErrorObjectOwned>;
 
     #[method(name = "removeContact", param_kind = map)]
@@ -179,27 +182,30 @@ pub trait Rpc {
         account: Option<String>,
         recipients: Vec<String>,
         groupIds: Vec<String>,
-        noteToSelf: bool,
-        endSession: bool,
+        usernames: Vec<String>,
+        #[allow(non_snake_case)] notifySelf: bool,
+        #[allow(non_snake_case)] noteToSelf: bool,
+        #[allow(non_snake_case)] endSession: bool,
         message: String,
         attachments: Vec<String>,
-        viewOnce: bool,
+        #[allow(non_snake_case)] viewOnce: bool,
         mentions: Vec<String>,
-        textStyle: Vec<String>,
-        quoteTimestamp: Option<u64>,
-        quoteAuthor: Option<String>,
-        quoteMessage: Option<String>,
-        quoteMention: Vec<String>,
-        quoteTextStyle: Vec<String>,
-        quoteAttachment: Vec<String>,
-        previewUrl: Option<String>,
-        previewTitle: Option<String>,
-        previewDescription: Option<String>,
-        previewImage: Option<String>,
+        #[allow(non_snake_case)] textStyle: Vec<String>,
+        #[allow(non_snake_case)] quoteTimestamp: Option<u64>,
+        #[allow(non_snake_case)] quoteAuthor: Option<String>,
+        #[allow(non_snake_case)] quoteMessage: Option<String>,
+        #[allow(non_snake_case)] quoteMention: Vec<String>,
+        #[allow(non_snake_case)] quoteTextStyle: Vec<String>,
+        #[allow(non_snake_case)] quoteAttachment: Vec<String>,
+        #[allow(non_snake_case)] previewUrl: Option<String>,
+        #[allow(non_snake_case)] previewTitle: Option<String>,
+        #[allow(non_snake_case)] previewDescription: Option<String>,
+        #[allow(non_snake_case)] previewImage: Option<String>,
         sticker: Option<String>,
-        storyTimestamp: Option<u64>,
-        storyAuthor: Option<String>,
-        editTimestamp: Option<u64>,
+        #[allow(non_snake_case)] storyTimestamp: Option<u64>,
+        #[allow(non_snake_case)] storyAuthor: Option<String>,
+        #[allow(non_snake_case)] editTimestamp: Option<u64>,
+        #[allow(non_snake_case)] noUrgent: bool,
     ) -> Result<Value, ErrorObjectOwned>;
 
     #[method(name = "sendContacts", param_kind = map)]
@@ -301,7 +307,9 @@ pub trait Rpc {
         account: Option<String>,
         recipients: Vec<String>,
         #[allow(non_snake_case)] groupIds: Vec<String>,
+        usernames: Vec<String>,
         #[allow(non_snake_case)] noteToSelf: bool,
+        #[allow(non_snake_case)] notifySelf: bool,
         emoji: String,
         #[allow(non_snake_case)] targetAuthor: String,
         #[allow(non_snake_case)] targetTimestamp: u64,
@@ -314,6 +322,7 @@ pub trait Rpc {
         &self,
         account: Option<String>,
         recipient: String,
+        usernames: Vec<String>,
         #[allow(non_snake_case)] targetTimestamps: Vec<u64>,
         r#type: String,
     ) -> Result<Value, ErrorObjectOwned>;
@@ -395,6 +404,8 @@ pub trait Rpc {
         unrestrictedUnidentifiedSender: Option<bool>,
         discoverableByNumber: Option<bool>,
         numberSharing: Option<bool>,
+        username: Option<String>,
+        deleteUsername: bool,
     ) -> Result<Value, ErrorObjectOwned>;
 
     #[method(name = "updateConfiguration", param_kind = map)]
@@ -414,6 +425,11 @@ pub trait Rpc {
         recipient: String,
         name: Option<String>,
         expiration: Option<u32>,
+        #[allow(non_snake_case)] givenName: Option<String>,
+        #[allow(non_snake_case)] familyName: Option<String>,
+        #[allow(non_snake_case)] nickGivenName: Option<String>,
+        #[allow(non_snake_case)] nickFamilyName: Option<String>,
+        note: Option<String>,
     ) -> Result<Value, ErrorObjectOwned>;
 
     #[method(name = "updateDevice", param_kind = map)]

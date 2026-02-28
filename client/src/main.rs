@@ -84,9 +84,19 @@ async fn handle_command(
             all_recipients,
             blocked,
             name,
+            detailed,
+            internal,
         } => {
             client
-                .list_contacts(cli.account, recipient, all_recipients, blocked, name)
+                .list_contacts(
+                    cli.account,
+                    recipient,
+                    all_recipients,
+                    blocked,
+                    name,
+                    detailed,
+                    internal,
+                )
                 .await
         }
         CliCommands::ListDevices => client.list_devices(cli.account).await,
@@ -105,8 +115,14 @@ async fn handle_command(
                 .quit_group(cli.account, group_id, delete, admin)
                 .await
         }
-        CliCommands::Register { voice, captcha } => {
-            client.register(cli.account, voice, captcha).await
+        CliCommands::Register {
+            voice,
+            captcha,
+            reregister,
+        } => {
+            client
+                .register(cli.account, voice, captcha, reregister)
+                .await
         }
         CliCommands::RemoveContact {
             recipient,
@@ -140,9 +156,12 @@ async fn handle_command(
         CliCommands::Send {
             recipient,
             group_id,
+            username,
+            notify_self,
             note_to_self,
             end_session,
             message,
+            message_from_stdin,
             attachment,
             view_once,
             mention,
@@ -161,15 +180,22 @@ async fn handle_command(
             story_timestamp,
             story_author,
             edit_timestamp,
+            no_urgent,
         } => {
             client
                 .send(
                     cli.account,
                     recipient,
                     group_id,
+                    username,
+                    notify_self,
                     note_to_self,
                     end_session,
-                    message.unwrap_or_default(),
+                    if message_from_stdin {
+                        std::io::read_to_string(std::io::stdin()).unwrap()
+                    } else {
+                        message.unwrap_or_default()
+                    },
                     attachment,
                     view_once,
                     mention,
@@ -188,6 +214,7 @@ async fn handle_command(
                     story_timestamp,
                     story_author,
                     edit_timestamp,
+                    no_urgent,
                 )
                 .await
         }
@@ -318,7 +345,9 @@ async fn handle_command(
         CliCommands::SendReaction {
             recipient,
             group_id,
+            username,
             note_to_self,
+            notify_self,
             emoji,
             target_author,
             target_timestamp,
@@ -330,7 +359,9 @@ async fn handle_command(
                     cli.account,
                     recipient,
                     group_id,
+                    username,
                     note_to_self,
+                    notify_self,
                     emoji,
                     target_author,
                     target_timestamp,
@@ -341,6 +372,7 @@ async fn handle_command(
         }
         CliCommands::SendReceipt {
             recipient,
+            username,
             target_timestamp,
             r#type,
         } => {
@@ -348,6 +380,7 @@ async fn handle_command(
                 .send_receipt(
                     cli.account,
                     recipient,
+                    username,
                     target_timestamp,
                     match r#type {
                         cli::ReceiptType::Read => "read".to_owned(),
@@ -422,6 +455,8 @@ async fn handle_command(
             unrestricted_unidentified_sender,
             discoverable_by_number,
             number_sharing,
+            username,
+            delete_username,
         } => {
             client
                 .update_account(
@@ -430,6 +465,8 @@ async fn handle_command(
                     unrestricted_unidentified_sender,
                     discoverable_by_number,
                     number_sharing,
+                    username,
+                    delete_username,
                 )
                 .await
         }
@@ -453,9 +490,24 @@ async fn handle_command(
             recipient,
             expiration,
             name,
+            given_name,
+            family_name,
+            nick_given_name,
+            nick_family_name,
+            note,
         } => {
             client
-                .update_contact(cli.account, recipient, name, expiration)
+                .update_contact(
+                    cli.account,
+                    recipient,
+                    name,
+                    expiration,
+                    given_name,
+                    family_name,
+                    nick_given_name,
+                    nick_family_name,
+                    note,
+                )
                 .await
         }
         CliCommands::UpdateDevice {
