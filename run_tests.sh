@@ -19,12 +19,18 @@ PATH_MAIN="$PATH_TEST_CONFIG/main"
 PATH_LINK="$PATH_TEST_CONFIG/link"
 
 if [ "$NATIVE" -eq 1 ]; then
+	./gradlew nativeCompile
 	SIGNAL_CLI="$PWD/build/native/nativeCompile/signal-cli"
 elif [ "$JSON_RPC" -eq 1 ]; then
 	(cd client && cargo build)
-	"$PWD/build/install/signal-cli/bin/signal-cli" --verbose --verbose --trust-new-identities=always --config="$PATH_MAIN" --service-environment="staging" --log-file="$PATH_MAIN/log" daemon --socket --receive-mode=manual&
+	./gradlew installDist
 	"$PWD/build/install/signal-cli/bin/signal-cli" --verbose --verbose --trust-new-identities=always --config="$PATH_LINK" --service-environment="staging" --log-file="$PATH_LINK/log" daemon --tcp --receive-mode=manual&
-	sleep 5
+	if [ ! -z "$GRAALVM_HOME" ]; then
+	  export JAVA_HOME=$GRAALVM_HOME
+	  export SIGNAL_CLI_OPTS="-agentlib:native-image-agent=config-merge-dir=graalvm-config-dir-main/"
+	fi
+	"$PWD/build/install/signal-cli/bin/signal-cli" --verbose --verbose --trust-new-identities=always --config="$PATH_MAIN" --service-environment="staging" --log-file="$PATH_MAIN/log" daemon --socket --receive-mode=manual&
+	sleep 15
 	SIGNAL_CLI="$PWD/client/target/debug/signal-cli-client"
 else
 	./gradlew installDist
@@ -113,10 +119,10 @@ fi
 sleep 5
 
 run_main listAccounts
-run_main --output=json listAccounts
-run_main --scrub-log listAccounts
 
 if [ "$JSON_RPC" -eq 0 ]; then
+run_main --output=json listAccounts
+run_main --scrub-log listAccounts
 ## DBus
 #run_main -a "$NUMBER_1" --dbus send "$NUMBER_2" -m daemon_not_running || true
 #run_main daemon &
