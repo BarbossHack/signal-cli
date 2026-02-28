@@ -1300,6 +1300,18 @@
       "jniAccessible": true
     },
     {
+      "type": "java.util.concurrent.CancellationException",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "java.util.concurrent.ForkJoinTask",
       "fields": [
         {
@@ -2566,6 +2578,31 @@
       ]
     },
     {
+      "type": "org.asamk.signal.json.JsonPinMessage",
+      "methods": [
+        {
+          "name": "pinDurationSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetAuthor",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetAuthorNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetAuthorUuid",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetSentTimestamp",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.asamk.signal.json.JsonPollCreate",
       "allDeclaredFields": true,
       "methods": [
@@ -2914,6 +2951,27 @@
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.asamk.signal.json.JsonUnpinMessage",
+      "methods": [
+        {
+          "name": "targetAuthor",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetAuthorNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetAuthorUuid",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetSentTimestamp",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.asamk.signal.jsonrpc.JsonRpcBatchMessage",
@@ -9450,6 +9508,18 @@
       "type": "sun.text.resources.CollationData"
     },
     {
+      "type": "sun.text.resources.FormatData"
+    },
+    {
+      "type": "sun.text.resources.FormatData_en"
+    },
+    {
+      "type": "sun.text.resources.FormatData_en_US"
+    },
+    {
+      "type": "sun.text.resources.JavaTimeSupplementary"
+    },
+    {
       "type": "sun.text.resources.cldr.FormatData"
     },
     {
@@ -9460,6 +9530,15 @@
     },
     {
       "type": "sun.util.resources.cldr.CalendarData"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en"
+    },
+    {
+      "type": "sun.util.resources.cldr.TimeZoneNames_en_US"
     },
     {
       "type": {

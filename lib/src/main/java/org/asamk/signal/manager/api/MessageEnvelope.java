@@ -120,7 +120,9 @@ public record MessageEnvelope(
             Optional<PollTerminate> pollTerminate,
             List<Mention> mentions,
             List<Preview> previews,
-            List<TextStyle> textStyles
+            List<TextStyle> textStyles,
+            Optional<PinMessage> pinMessage,
+            Optional<UnpinMessage> unpinMessage
     ) {
 
         static Data from(
@@ -169,7 +171,10 @@ public record MessageEnvelope(
                             .orElse(List.of()),
                     dataMessage.getBodyRanges()
                             .map(a -> a.stream().filter(r -> r.style != null).map(TextStyle::from).toList())
-                            .orElse(List.of()));
+                            .orElse(List.of()),
+                    dataMessage.getPinnedMessage().map(p -> PinMessage.from(p, recipientResolver, addressResolver)),
+                    dataMessage.getUnpinnedMessage()
+                            .map(p -> UnpinMessage.from(p, recipientResolver, addressResolver)));
         }
 
         public record GroupContext(GroupId groupId, boolean isGroupUpdate, int revision) {
@@ -561,6 +566,39 @@ public record MessageEnvelope(
                         preview.getDate(),
                         preview.getUrl(),
                         preview.getImage().map(as -> Attachment.from(as, fileProvider)));
+            }
+        }
+
+        public record PinMessage(
+                RecipientAddress targetAuthor, long targetSentTimestamp, long pinDurationSeconds
+        ) {
+
+            static PinMessage from(
+                    SignalServiceDataMessage.PinnedMessage pinnedMessage,
+                    RecipientResolver recipientResolver,
+                    RecipientAddressResolver addressResolver
+            ) {
+                return new PinMessage(addressResolver.resolveRecipientAddress(recipientResolver.resolveRecipient(
+                        pinnedMessage.getTargetAuthor())).toApiRecipientAddress(),
+                        pinnedMessage.getTargetSentTimestamp(),
+                        Boolean.TRUE.equals(pinnedMessage.getForever())
+                                ? -1
+                                : pinnedMessage.getPinDurationInSeconds() == null
+                                        ? 0
+                                        : pinnedMessage.getPinDurationInSeconds());
+            }
+        }
+
+        public record UnpinMessage(RecipientAddress targetAuthor, long targetSentTimestamp) {
+
+            static UnpinMessage from(
+                    SignalServiceDataMessage.UnpinnedMessage unpinnedMessage,
+                    RecipientResolver recipientResolver,
+                    RecipientAddressResolver addressResolver
+            ) {
+                return new UnpinMessage(addressResolver.resolveRecipientAddress(recipientResolver.resolveRecipient(
+                        unpinnedMessage.getTargetAuthor())).toApiRecipientAddress(),
+                        unpinnedMessage.getTargetSentTimestamp());
             }
         }
 

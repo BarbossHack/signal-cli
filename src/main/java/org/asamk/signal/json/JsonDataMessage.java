@@ -27,7 +27,9 @@ record JsonDataMessage(
         @JsonInclude(JsonInclude.Include.NON_NULL) JsonPollTerminate pollTerminate,
         @JsonInclude(JsonInclude.Include.NON_NULL) List<JsonTextStyle> textStyles,
         @JsonInclude(JsonInclude.Include.NON_NULL) JsonGroupInfo groupInfo,
-        @JsonInclude(JsonInclude.Include.NON_NULL) JsonStoryContext storyContext
+        @JsonInclude(JsonInclude.Include.NON_NULL) JsonStoryContext storyContext,
+        @JsonInclude(JsonInclude.Include.NON_NULL) JsonPinMessage pinMessage,
+        @JsonInclude(JsonInclude.Include.NON_NULL) JsonUnpinMessage unpinMessage
 ) {
 
     static JsonDataMessage from(MessageEnvelope.Data dataMessage, Manager m) {
@@ -71,6 +73,8 @@ record JsonDataMessage(
                 .stream()
                 .map(JsonTextStyle::from)
                 .toList() : null;
+        final var pinMessage = dataMessage.pinMessage().map(JsonPinMessage::from).orElse(null);
+        final var unpinMessage = dataMessage.unpinMessage().map(JsonUnpinMessage::from).orElse(null);
 
         return new JsonDataMessage(timestamp,
                 message,
@@ -91,6 +95,8 @@ record JsonDataMessage(
                 pollTerminate,
                 textStyles,
                 groupInfo,
-                storyContext);
+                storyContext,
+                pinMessage,
+                unpinMessage);
     }
 }
