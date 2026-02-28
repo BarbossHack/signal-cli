@@ -2226,7 +2226,25 @@
       "type": "org.asamk.signal.dbus.DbusSignalImpl$DbusSignalIdentityImpl"
     },
     {
-      "type": "org.asamk.signal.json.JsonAdminDelete"
+      "type": "org.asamk.signal.json.JsonAdminDelete",
+      "methods": [
+        {
+          "name": "targetAuthor",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetAuthorNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetAuthorUuid",
+          "parameterTypes": []
+        },
+        {
+          "name": "targetSentTimestamp",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.asamk.signal.json.JsonAttachment",
@@ -9660,6 +9678,27 @@
     },
     {
       "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_*"
+    },
+    {
+      "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_AG"
+    },
+    {
+      "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_AI"
+    },
+    {
+      "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_AS"
+    },
+    {
+      "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_BB"
+    },
+    {
+      "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_BM"
+    },
+    {
+      "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_BS"
+    },
+    {
+      "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_CA"
     },
     {
       "glob": "com/google/i18n/phonenumbers/data/PhoneNumberMetadataProto_DE"
