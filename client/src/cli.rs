@@ -289,6 +289,7 @@ pub enum CliCommands {
         #[arg(short = 'g', long = "group-id")]
         group_id: Vec<String>,
 
+        #[arg(long)]
         r#type: MessageRequestResponseType,
     },
     SetPin {
