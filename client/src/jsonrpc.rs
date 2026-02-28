@@ -205,6 +205,87 @@ pub trait Rpc {
     #[method(name = "sendContacts", param_kind = map)]
     fn send_contacts(&self, account: Option<String>) -> Result<Value, ErrorObjectOwned>;
 
+    #[method(name = "sendAdminDelete", param_kind = map)]
+    fn send_admin_delete(
+        &self,
+        account: Option<String>,
+        #[allow(non_snake_case)] groupIds: Vec<String>,
+        #[allow(non_snake_case)] targetAuthor: String,
+        #[allow(non_snake_case)] targetTimestamp: u64,
+        story: bool,
+        #[allow(non_snake_case)] notifySelf: bool,
+    ) -> Result<Value, ErrorObjectOwned>;
+
+    #[method(name = "sendPinMessage", param_kind = map)]
+    fn send_pin_message(
+        &self,
+        account: Option<String>,
+        recipients: Vec<String>,
+        #[allow(non_snake_case)] groupIds: Vec<String>,
+        usernames: Vec<String>,
+        #[allow(non_snake_case)] targetAuthor: String,
+        #[allow(non_snake_case)] targetTimestamp: u64,
+        #[allow(non_snake_case)] pinDuration: Option<i32>,
+        #[allow(non_snake_case)] noteToSelf: bool,
+        #[allow(non_snake_case)] notifySelf: bool,
+        story: bool,
+    ) -> Result<Value, ErrorObjectOwned>;
+
+    #[method(name = "sendPollCreate", param_kind = map)]
+    fn send_poll_create(
+        &self,
+        account: Option<String>,
+        recipients: Vec<String>,
+        #[allow(non_snake_case)] groupIds: Vec<String>,
+        usernames: Vec<String>,
+        question: String,
+        option: Vec<String>,
+        #[allow(non_snake_case)] noMulti: bool,
+        #[allow(non_snake_case)] noteToSelf: bool,
+        #[allow(non_snake_case)] notifySelf: bool,
+    ) -> Result<Value, ErrorObjectOwned>;
+
+    #[method(name = "sendPollVote", param_kind = map)]
+    fn send_poll_vote(
+        &self,
+        account: Option<String>,
+        recipients: Vec<String>,
+        #[allow(non_snake_case)] groupIds: Vec<String>,
+        usernames: Vec<String>,
+        #[allow(non_snake_case)] pollAuthor: Option<String>,
+        #[allow(non_snake_case)] pollTimestamp: u64,
+        option: Vec<i32>,
+        #[allow(non_snake_case)] voteCount: i32,
+        #[allow(non_snake_case)] noteToSelf: bool,
+        #[allow(non_snake_case)] notifySelf: bool,
+    ) -> Result<Value, ErrorObjectOwned>;
+
+    #[method(name = "sendPollTerminate", param_kind = map)]
+    fn send_poll_terminate(
+        &self,
+        account: Option<String>,
+        recipients: Vec<String>,
+        #[allow(non_snake_case)] groupIds: Vec<String>,
+        usernames: Vec<String>,
+        #[allow(non_snake_case)] pollTimestamp: u64,
+        #[allow(non_snake_case)] noteToSelf: bool,
+        #[allow(non_snake_case)] notifySelf: bool,
+    ) -> Result<Value, ErrorObjectOwned>;
+
+    #[method(name = "sendUnpinMessage", param_kind = map)]
+    fn send_unpin_message(
+        &self,
+        account: Option<String>,
+        recipients: Vec<String>,
+        #[allow(non_snake_case)] groupIds: Vec<String>,
+        usernames: Vec<String>,
+        #[allow(non_snake_case)] targetAuthor: String,
+        #[allow(non_snake_case)] targetTimestamp: u64,
+        #[allow(non_snake_case)] noteToSelf: bool,
+        #[allow(non_snake_case)] notifySelf: bool,
+        story: bool,
+    ) -> Result<Value, ErrorObjectOwned>;
+
     #[method(name = "sendPaymentNotification", param_kind = map)]
     fn send_payment_notification(
         &self,
@@ -333,6 +414,14 @@ pub trait Rpc {
         recipient: String,
         name: Option<String>,
         expiration: Option<u32>,
+    ) -> Result<Value, ErrorObjectOwned>;
+
+    #[method(name = "updateDevice", param_kind = map)]
+    fn update_device(
+        &self,
+        account: Option<String>,
+        #[allow(non_snake_case)] deviceId: u32,
+        #[allow(non_snake_case)] deviceName: String,
     ) -> Result<Value, ErrorObjectOwned>;
 
     #[method(name = "updateGroup", param_kind = map)]

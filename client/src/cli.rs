@@ -230,6 +230,22 @@ pub enum CliCommands {
         #[arg(long)]
         edit_timestamp: Option<u64>,
     },
+    SendAdminDelete {
+        #[arg(short = 'g', long = "group-id")]
+        group_id: Vec<String>,
+
+        #[arg(short = 'a', long = "target-author")]
+        target_author: String,
+
+        #[arg(short = 't', long = "target-timestamp")]
+        target_timestamp: u64,
+
+        #[arg(long)]
+        story: bool,
+
+        #[arg(long)]
+        notify_self: bool,
+    },
     SendContacts,
     SendPaymentNotification {
         recipient: String,
@@ -239,6 +255,102 @@ pub enum CliCommands {
 
         #[arg(long)]
         note: String,
+    },
+    SendPinMessage {
+        recipient: Vec<String>,
+
+        #[arg(short = 'g', long = "group-id")]
+        group_id: Vec<String>,
+
+        #[arg(short = 'u', long = "username")]
+        username: Vec<String>,
+
+        #[arg(short = 'a', long = "target-author")]
+        target_author: String,
+
+        #[arg(short = 't', long = "target-timestamp")]
+        target_timestamp: u64,
+
+        #[arg(short = 'd', long = "pin-duration")]
+        pin_duration: Option<i32>,
+
+        #[arg(long = "note-to-self")]
+        note_to_self: bool,
+
+        #[arg(long)]
+        notify_self: bool,
+
+        #[arg(long)]
+        story: bool,
+    },
+    SendPollCreate {
+        recipient: Vec<String>,
+
+        #[arg(short = 'g', long = "group-id")]
+        group_id: Vec<String>,
+
+        #[arg(short = 'u', long = "username")]
+        username: Vec<String>,
+
+        #[arg(short = 'q', long = "question")]
+        question: String,
+
+        #[arg(short = 'o', long = "option")]
+        option: Vec<String>,
+
+        #[arg(long = "no-multi")]
+        no_multi: bool,
+
+        #[arg(long = "note-to-self")]
+        note_to_self: bool,
+
+        #[arg(long)]
+        notify_self: bool,
+    },
+    SendPollTerminate {
+        recipient: Vec<String>,
+
+        #[arg(short = 'g', long = "group-id")]
+        group_id: Vec<String>,
+
+        #[arg(short = 'u', long = "username")]
+        username: Vec<String>,
+
+        #[arg(long = "poll-timestamp")]
+        poll_timestamp: u64,
+
+        #[arg(long = "note-to-self")]
+        note_to_self: bool,
+
+        #[arg(long)]
+        notify_self: bool,
+    },
+    SendPollVote {
+        recipient: Vec<String>,
+
+        #[arg(short = 'g', long = "group-id")]
+        group_id: Vec<String>,
+
+        #[arg(short = 'u', long = "username")]
+        username: Vec<String>,
+
+        #[arg(long = "poll-author")]
+        poll_author: Option<String>,
+
+        #[arg(long = "poll-timestamp")]
+        poll_timestamp: u64,
+
+        #[arg(short = 'o', long = "option")]
+        option: Vec<i32>,
+
+        #[arg(long = "vote-count")]
+        vote_count: i32,
+
+        #[arg(long = "note-to-self")]
+        note_to_self: bool,
+
+        #[arg(long)]
+        notify_self: bool,
     },
     SendReaction {
         recipient: Vec<String>,
@@ -282,6 +394,30 @@ pub enum CliCommands {
 
         #[arg(short = 's', long)]
         stop: bool,
+    },
+    SendUnpinMessage {
+        recipient: Vec<String>,
+
+        #[arg(short = 'g', long = "group-id")]
+        group_id: Vec<String>,
+
+        #[arg(short = 'u', long = "username")]
+        username: Vec<String>,
+
+        #[arg(short = 'a', long = "target-author")]
+        target_author: String,
+
+        #[arg(short = 't', long = "target-timestamp")]
+        target_timestamp: u64,
+
+        #[arg(long = "note-to-self")]
+        note_to_self: bool,
+
+        #[arg(long)]
+        notify_self: bool,
+
+        #[arg(long)]
+        story: bool,
     },
     SendMessageRequestResponse {
         recipient: Vec<String>,
@@ -357,6 +493,13 @@ pub enum CliCommands {
 
         #[arg(short = 'n', long)]
         name: Option<String>,
+    },
+    UpdateDevice {
+        #[arg(short = 'd', long = "device-id")]
+        device_id: u32,
+
+        #[arg(short = 'n', long = "device-name")]
+        device_name: String,
     },
     UpdateGroup {
         #[arg(short = 'g', long = "group-id")]

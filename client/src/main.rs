@@ -192,6 +192,24 @@ async fn handle_command(
                 .await
         }
         CliCommands::SendContacts => client.send_contacts(cli.account).await,
+        CliCommands::SendAdminDelete {
+            group_id,
+            target_author,
+            target_timestamp,
+            story,
+            notify_self,
+        } => {
+            client
+                .send_admin_delete(
+                    cli.account,
+                    group_id,
+                    target_author,
+                    target_timestamp,
+                    story,
+                    notify_self,
+                )
+                .await
+        }
         CliCommands::SendPaymentNotification {
             recipient,
             receipt,
@@ -199,6 +217,102 @@ async fn handle_command(
         } => {
             client
                 .send_payment_notification(cli.account, recipient, receipt, note)
+                .await
+        }
+        CliCommands::SendPinMessage {
+            recipient,
+            group_id,
+            username,
+            target_author,
+            target_timestamp,
+            pin_duration,
+            note_to_self,
+            notify_self,
+            story,
+        } => {
+            client
+                .send_pin_message(
+                    cli.account,
+                    recipient,
+                    group_id,
+                    username,
+                    target_author,
+                    target_timestamp,
+                    pin_duration,
+                    note_to_self,
+                    notify_self,
+                    story,
+                )
+                .await
+        }
+        CliCommands::SendPollCreate {
+            recipient,
+            group_id,
+            username,
+            question,
+            option,
+            no_multi,
+            note_to_self,
+            notify_self,
+        } => {
+            client
+                .send_poll_create(
+                    cli.account,
+                    recipient,
+                    group_id,
+                    username,
+                    question,
+                    option,
+                    no_multi,
+                    note_to_self,
+                    notify_self,
+                )
+                .await
+        }
+        CliCommands::SendPollTerminate {
+            recipient,
+            group_id,
+            username,
+            poll_timestamp,
+            note_to_self,
+            notify_self,
+        } => {
+            client
+                .send_poll_terminate(
+                    cli.account,
+                    recipient,
+                    group_id,
+                    username,
+                    poll_timestamp,
+                    note_to_self,
+                    notify_self,
+                )
+                .await
+        }
+        CliCommands::SendPollVote {
+            recipient,
+            group_id,
+            username,
+            poll_author,
+            poll_timestamp,
+            option,
+            vote_count,
+            note_to_self,
+            notify_self,
+        } => {
+            client
+                .send_poll_vote(
+                    cli.account,
+                    recipient,
+                    group_id,
+                    username,
+                    poll_author,
+                    poll_timestamp,
+                    option,
+                    vote_count,
+                    note_to_self,
+                    notify_self,
+                )
                 .await
         }
         CliCommands::SendReaction {
@@ -250,6 +364,30 @@ async fn handle_command(
         } => {
             client
                 .send_typing(cli.account, recipient, group_id, stop)
+                .await
+        }
+        CliCommands::SendUnpinMessage {
+            recipient,
+            group_id,
+            username,
+            target_author,
+            target_timestamp,
+            note_to_self,
+            notify_self,
+            story,
+        } => {
+            client
+                .send_unpin_message(
+                    cli.account,
+                    recipient,
+                    group_id,
+                    username,
+                    target_author,
+                    target_timestamp,
+                    note_to_self,
+                    notify_self,
+                    story,
+                )
                 .await
         }
         CliCommands::SetPin { pin } => client.set_pin(cli.account, pin).await,
@@ -318,6 +456,14 @@ async fn handle_command(
         } => {
             client
                 .update_contact(cli.account, recipient, name, expiration)
+                .await
+        }
+        CliCommands::UpdateDevice {
+            device_id,
+            device_name,
+        } => {
+            client
+                .update_device(cli.account, device_id, device_name)
                 .await
         }
         CliCommands::UpdateGroup {
