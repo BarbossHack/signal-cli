@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.14.0] - 2026-03-01
 
 **Attention**: Now requires Java 25
 
@@ -15,8 +15,22 @@ Requires libsignal-client version 0.87.4.
 
 ### Added
 
+- The `link` command now prints a QR code in the terminal. (Thanks @karel1980)
 - Add --ignore-avatars flag to prevent downloading avatars
 - Add --ignore-stickers flag to prevent downloading sticker packs
+- Add `--no-urgent` flag to `send` command to send messages that don't trigger a push notification. (Thanks @kaikozlov)
+- Add `sendPinMessage`/`sendUnpinMessage` commands for pinning messages
+
+### Improved
+
+- Improved behavior for unregistered contacts
+- Profiles are refreshed when using the listContacts command
+- For long text messages the text attachment is used instead of the truncated body
+
+### Fixed
+
+- Adapted to new binary aci/pni formats in the Signal protocol
+- Group invites should now work when the user was invited via phone number (PNI only)
 
 ## [0.13.24] - 2026-02-05
 

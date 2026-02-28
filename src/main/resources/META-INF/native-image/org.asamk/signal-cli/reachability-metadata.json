@@ -5692,6 +5692,18 @@
       ]
     },
     {
+      "type": "org.signal.libsignal.protocol.SessionCipher$2",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "loadSignedPreKey",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.signal.libsignal.protocol.SignalProtocolAddress",
       "jniAccessible": true,
       "methods": [
