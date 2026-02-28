@@ -22,6 +22,7 @@ if [ "$NATIVE" -eq 1 ]; then
 	./gradlew nativeCompile
 	SIGNAL_CLI="$PWD/build/native/nativeCompile/signal-cli"
 elif [ "$JSON_RPC" -eq 1 ]; then
+	export RUST_BACKTRACE=1
 	(cd client && cargo build)
 	./gradlew installDist
 	"$PWD/build/install/signal-cli/bin/signal-cli" --verbose --verbose --trust-new-identities=always --config="$PATH_LINK" --service-environment="staging" --log-file="$PATH_LINK/log" daemon --tcp --receive-mode=manual&
