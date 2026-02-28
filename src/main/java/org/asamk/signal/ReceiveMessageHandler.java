@@ -224,6 +224,11 @@ public class ReceiveMessageHandler implements Manager.ReceiveMessageHandler {
             final var unpinMessage = message.unpinMessage().get();
             printUnpinMessage(writer.indentedWriter(), unpinMessage);
         }
+        if (message.adminDelete().isPresent()) {
+            writer.println("Admin Delete:");
+            final var adminDelete = message.adminDelete().get();
+            printAdminDelete(writer.indentedWriter(), adminDelete);
+        }
     }
 
     private void printEditMessage(PlainTextWriter writer, MessageEnvelope.Edit message) {
@@ -646,6 +651,11 @@ public class ReceiveMessageHandler implements Manager.ReceiveMessageHandler {
     private void printUnpinMessage(final PlainTextWriter writer, final MessageEnvelope.Data.UnpinMessage unpinMessage) {
         writer.println("Target author: {}", formatContact(unpinMessage.targetAuthor()));
         writer.println("Target timestamp: {}", DateUtils.formatTimestamp(unpinMessage.targetSentTimestamp()));
+    }
+
+    private void printAdminDelete(final PlainTextWriter writer, final MessageEnvelope.Data.AdminDelete adminDelete) {
+        writer.println("Target author: {}", formatContact(adminDelete.targetAuthor()));
+        writer.println("Target timestamp: {}", DateUtils.formatTimestamp(adminDelete.targetSentTimestamp()));
     }
 
     private String formatContact(RecipientAddress address) {

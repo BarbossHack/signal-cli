@@ -29,7 +29,8 @@ record JsonDataMessage(
         @JsonInclude(JsonInclude.Include.NON_NULL) JsonGroupInfo groupInfo,
         @JsonInclude(JsonInclude.Include.NON_NULL) JsonStoryContext storyContext,
         @JsonInclude(JsonInclude.Include.NON_NULL) JsonPinMessage pinMessage,
-        @JsonInclude(JsonInclude.Include.NON_NULL) JsonUnpinMessage unpinMessage
+        @JsonInclude(JsonInclude.Include.NON_NULL) JsonUnpinMessage unpinMessage,
+        @JsonInclude(JsonInclude.Include.NON_NULL) JsonAdminDelete adminDelete
 ) {
 
     static JsonDataMessage from(MessageEnvelope.Data dataMessage, Manager m) {
@@ -75,6 +76,7 @@ record JsonDataMessage(
                 .toList() : null;
         final var pinMessage = dataMessage.pinMessage().map(JsonPinMessage::from).orElse(null);
         final var unpinMessage = dataMessage.unpinMessage().map(JsonUnpinMessage::from).orElse(null);
+        final var adminDelete = dataMessage.adminDelete().map(JsonAdminDelete::from).orElse(null);
 
         return new JsonDataMessage(timestamp,
                 message,
@@ -97,6 +99,7 @@ record JsonDataMessage(
                 groupInfo,
                 storyContext,
                 pinMessage,
-                unpinMessage);
+                unpinMessage,
+                adminDelete);
     }
 }

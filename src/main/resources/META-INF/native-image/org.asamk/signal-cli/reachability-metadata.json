@@ -2226,6 +2226,9 @@
       "type": "org.asamk.signal.dbus.DbusSignalImpl$DbusSignalIdentityImpl"
     },
     {
+      "type": "org.asamk.signal.json.JsonAdminDelete"
+    },
+    {
       "type": "org.asamk.signal.json.JsonAttachment",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -5918,6 +5921,10 @@
     },
     {
       "type": "org.signal.libsignal.protocol.state.internal.PreKeyStore",
+      "jniAccessible": true
+    },
+    {
+      "type": "org.signal.libsignal.protocol.state.internal.SignedPreKeyStore",
       "jniAccessible": true
     },
     {

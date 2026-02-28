@@ -122,7 +122,8 @@ public record MessageEnvelope(
             List<Preview> previews,
             List<TextStyle> textStyles,
             Optional<PinMessage> pinMessage,
-            Optional<UnpinMessage> unpinMessage
+            Optional<UnpinMessage> unpinMessage,
+            Optional<AdminDelete> adminDelete
     ) {
 
         static Data from(
@@ -173,8 +174,8 @@ public record MessageEnvelope(
                             .map(a -> a.stream().filter(r -> r.style != null).map(TextStyle::from).toList())
                             .orElse(List.of()),
                     dataMessage.getPinnedMessage().map(p -> PinMessage.from(p, recipientResolver, addressResolver)),
-                    dataMessage.getUnpinnedMessage()
-                            .map(p -> UnpinMessage.from(p, recipientResolver, addressResolver)));
+                    dataMessage.getUnpinnedMessage().map(p -> UnpinMessage.from(p, recipientResolver, addressResolver)),
+                    dataMessage.getAdminDelete().map(p -> AdminDelete.from(p, recipientResolver, addressResolver)));
         }
 
         public record GroupContext(GroupId groupId, boolean isGroupUpdate, int revision) {
@@ -599,6 +600,18 @@ public record MessageEnvelope(
                 return new UnpinMessage(addressResolver.resolveRecipientAddress(recipientResolver.resolveRecipient(
                         unpinnedMessage.getTargetAuthor())).toApiRecipientAddress(),
                         unpinnedMessage.getTargetSentTimestamp());
+            }
+        }
+
+        public record AdminDelete(RecipientAddress targetAuthor, long targetSentTimestamp) {
+
+            static AdminDelete from(
+                    SignalServiceDataMessage.AdminDelete adminDelete,
+                    RecipientResolver recipientResolver,
+                    RecipientAddressResolver addressResolver
+            ) {
+                return new AdminDelete(addressResolver.resolveRecipientAddress(recipientResolver.resolveRecipient(
+                        adminDelete.getTargetAuthor())).toApiRecipientAddress(), adminDelete.getTargetSentTimestamp());
             }
         }
 

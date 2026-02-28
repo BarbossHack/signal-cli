@@ -709,15 +709,21 @@ public final class IncomingMessageHandler {
             }
         }
 
-        var groupId = GroupUtils.getGroupId(groupContext);
-        var group = context.getGroupHelper().getGroup(groupId);
+        final var message = content.getDataMessage().orElse(null);
+
+        final var recipientId = account.getRecipientResolver().resolveRecipient(source);
+
+        final var groupId = GroupUtils.getGroupId(groupContext);
+        final var group = context.getGroupHelper().getGroup(groupId);
+
+        if (message != null && message.getAdminDelete().isPresent() && (group == null || !group.isAdmin(recipientId))) {
+            return true;
+        }
+
         if (group == null) {
             return false;
         }
 
-        final var message = content.getDataMessage().orElse(null);
-
-        final var recipientId = account.getRecipientResolver().resolveRecipient(source);
         if (!group.isMember(recipientId) && !(
                 group.isPendingMember(recipientId) && message != null && message.isGroupV2Update()
         )) {
