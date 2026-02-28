@@ -494,6 +494,29 @@ public class DbusManagerImpl implements Manager {
     }
 
     @Override
+    public SendMessageResults sendPinMessage(
+            final int pinDuration,
+            final RecipientIdentifier.Single targetAuthor,
+            final long targetSentTimestamp,
+            final Set<RecipientIdentifier> recipients,
+            final boolean notifySelf,
+            final boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SendMessageResults sendUnpinMessage(
+            final RecipientIdentifier.Single targetAuthor,
+            final long targetSentTimestamp,
+            final Set<RecipientIdentifier> recipients,
+            final boolean notifySelf,
+            final boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public SendMessageResults sendPaymentNotificationMessage(
             final byte[] receipt,
             final String note,

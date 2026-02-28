@@ -224,6 +224,23 @@ public interface Manager extends Closeable {
             final boolean isStory
     ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException;
 
+    SendMessageResults sendPinMessage(
+            int pinDuration,
+            RecipientIdentifier.Single targetAuthor,
+            long targetSentTimestamp,
+            Set<RecipientIdentifier> recipients,
+            boolean notifySelf,
+            boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException;
+
+    SendMessageResults sendUnpinMessage(
+            RecipientIdentifier.Single targetAuthor,
+            long targetSentTimestamp,
+            Set<RecipientIdentifier> recipients,
+            boolean notifySelf,
+            boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException;
+
     SendMessageResults sendPaymentNotificationMessage(
             byte[] receipt,
             String note,

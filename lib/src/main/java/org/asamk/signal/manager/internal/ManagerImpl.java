@@ -994,6 +994,54 @@ public class ManagerImpl implements Manager {
     }
 
     @Override
+    public SendMessageResults sendPinMessage(
+            int pinDuration,
+            RecipientIdentifier.Single targetAuthor,
+            long targetSentTimestamp,
+            Set<RecipientIdentifier> recipients,
+            final boolean notifySelf,
+            final boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException {
+        final var targetAuthorRecipientId = context.getRecipientHelper().resolveRecipient(targetAuthor);
+        final var authorServiceId = context.getRecipientHelper()
+                .resolveSignalServiceAddress(targetAuthorRecipientId)
+                .getServiceId();
+        final var duration = pinDuration >= 0 ? pinDuration : null;
+        final var forever = pinDuration < 0;
+        final var pinnedMessage = new SignalServiceDataMessage.PinnedMessage(authorServiceId,
+                targetSentTimestamp,
+                duration,
+                forever);
+        final var messageBuilder = SignalServiceDataMessage.newBuilder().withPinnedMessage(pinnedMessage);
+        if (isStory) {
+            messageBuilder.withStoryContext(new SignalServiceDataMessage.StoryContext(authorServiceId,
+                    targetSentTimestamp));
+        }
+        return sendMessage(messageBuilder, recipients, notifySelf);
+    }
+
+    @Override
+    public SendMessageResults sendUnpinMessage(
+            RecipientIdentifier.Single targetAuthor,
+            long targetSentTimestamp,
+            Set<RecipientIdentifier> recipients,
+            final boolean notifySelf,
+            final boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException {
+        final var targetAuthorRecipientId = context.getRecipientHelper().resolveRecipient(targetAuthor);
+        final var authorServiceId = context.getRecipientHelper()
+                .resolveSignalServiceAddress(targetAuthorRecipientId)
+                .getServiceId();
+        final var unpinnedMessage = new SignalServiceDataMessage.UnpinnedMessage(authorServiceId, targetSentTimestamp);
+        final var messageBuilder = SignalServiceDataMessage.newBuilder().withUnpinnedMessage(unpinnedMessage);
+        if (isStory) {
+            messageBuilder.withStoryContext(new SignalServiceDataMessage.StoryContext(authorServiceId,
+                    targetSentTimestamp));
+        }
+        return sendMessage(messageBuilder, recipients, notifySelf);
+    }
+
+    @Override
     public SendMessageResults sendPaymentNotificationMessage(
             byte[] receipt,
             String note,

@@ -497,6 +497,60 @@ The base64 encoded receipt blob.
 *--note* NOTE::
 Specify a note for the payment notification.
 
+=== sendPinMessage
+
+Send pin message for a previously received or sent message.
+
+RECIPIENT::
+Specify the recipients.
+
+*-g* GROUP, *--group-id* GROUP::
+Specify the recipient group ID in base64 encoding.
+
+*-u* USERNAME, *--username* USERNAME::
+Specify the recipient username or username link.
+
+*--note-to-self*::
+Send the pin message to self.
+
+*--notify-self*::
+If self is part of recipients/groups send a normal message, not a sync message.
+
+*-d* DURATION, *--pin-duration* DURATION::
+Specify the pin duration in seconds.
+Use -1 for forever (default: -1).
+
+*-a* RECIPIENT, *--target-author* RECIPIENT::
+Specify the number of the author of the message to pin.
+
+*-t* TIMESTAMP, *--target-timestamp* TIMESTAMP::
+Specify the timestamp of the message to pin.
+
+=== sendUnpinMessage
+
+Send unpin message for a previously received or sent message.
+
+RECIPIENT::
+Specify the recipients.
+
+*-g* GROUP, *--group-id* GROUP::
+Specify the recipient group ID in base64 encoding.
+
+*-u* USERNAME, *--username* USERNAME::
+Specify the recipient username or username link.
+
+*--note-to-self*::
+Send the unpin message to self.
+
+*--notify-self*::
+If self is part of recipients/groups send a normal message, not a sync message.
+
+*-a* RECIPIENT, *--target-author* RECIPIENT::
+Specify the number of the author of the message to unpin.
+
+*-t* TIMESTAMP, *--target-timestamp* TIMESTAMP::
+Specify the timestamp of the message to unpin.
+
 === sendReaction
 
 Send reaction to a previously received or sent message.

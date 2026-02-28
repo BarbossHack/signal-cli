@@ -1,0 +1,104 @@
+package org.asamk.signal.commands;
+
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.Subparser;
+
+import org.asamk.signal.commands.exceptions.CommandException;
+import org.asamk.signal.commands.exceptions.UnexpectedErrorException;
+import org.asamk.signal.commands.exceptions.UserErrorException;
+import org.asamk.signal.manager.Manager;
+import org.asamk.signal.manager.api.GroupNotFoundException;
+import org.asamk.signal.manager.api.GroupSendingNotAllowedException;
+import org.asamk.signal.manager.api.NotAGroupMemberException;
+import org.asamk.signal.manager.api.RecipientIdentifier;
+import org.asamk.signal.manager.api.UnregisteredRecipientException;
+import org.asamk.signal.output.OutputWriter;
+import org.asamk.signal.util.CommandUtil;
+
+import java.io.IOException;
+
+import static org.asamk.signal.util.SendMessageResultUtils.outputResult;
+
+public class SendPinMessageCommand implements JsonRpcLocalCommand {
+
+    @Override
+    public String getName() {
+        return "sendPinMessage";
+    }
+
+    @Override
+    public void attachToSubparser(final Subparser subparser) {
+        subparser.help("Send pin message for a previously received or sent message.");
+        subparser.addArgument("-g", "--group-id", "--group").help("Specify the recipient group ID.").nargs("*");
+        subparser.addArgument("recipient").help("Specify the recipients' phone number.").nargs("*");
+        subparser.addArgument("-u", "--username").help("Specify the recipient username or username link.").nargs("*");
+        subparser.addArgument("--note-to-self").help("Send the pin message to self.").action(Arguments.storeTrue());
+        subparser.addArgument("--notify-self")
+                .help("If self is part of recipients/groups send a normal message, not a sync message.")
+                .action(Arguments.storeTrue());
+
+        subparser.addArgument("-d", "--pin-duration")
+                .type(int.class)
+                .setDefault(-1)
+                .help("Specify the pin duration in seconds. Use -1 for forever.");
+        subparser.addArgument("-a", "--target-author")
+                .required(true)
+                .help("Specify the number of the author of the message to pin.");
+        subparser.addArgument("-t", "--target-timestamp")
+                .required(true)
+                .type(long.class)
+                .help("Specify the timestamp of the message to pin.");
+        subparser.addArgument("--story").help("Pin a story instead of a normal message").action(Arguments.storeTrue());
+    }
+
+    @Override
+    public void handleCommand(
+            final Namespace ns,
+            final Manager m,
+            final OutputWriter outputWriter
+    ) throws CommandException {
+        final var notifySelf = Boolean.TRUE.equals(ns.getBoolean("notify-self"));
+        final var isNoteToSelf = Boolean.TRUE.equals(ns.getBoolean("note-to-self"));
+        final var recipientStrings = ns.<String>getList("recipient");
+        final var groupIdStrings = ns.<String>getList("group-id");
+        final var usernameStrings = ns.<String>getList("username");
+
+        final var recipientIdentifiers = CommandUtil.getRecipientIdentifiers(m,
+                isNoteToSelf,
+                recipientStrings,
+                groupIdStrings,
+                usernameStrings);
+
+        final var pinDuration = ns.getInt("pin-duration");
+        final var targetAuthor = ns.getString("target-author");
+        final var targetTimestamp = ns.getLong("target-timestamp");
+        final var isStory = Boolean.TRUE.equals(ns.getBoolean("story"));
+
+        final RecipientIdentifier.Single targetAuthorIdentifier;
+        if (targetAuthor == null && recipientIdentifiers.size() == 1 && recipientIdentifiers.stream()
+                .findFirst()
+                .get() instanceof RecipientIdentifier.Single single) {
+            targetAuthorIdentifier = single;
+        } else {
+            targetAuthorIdentifier = CommandUtil.getSingleRecipientIdentifier(targetAuthor, m.getSelfNumber());
+        }
+        try {
+            final var results = m.sendPinMessage(pinDuration,
+                    targetAuthorIdentifier,
+                    targetTimestamp,
+                    recipientIdentifiers,
+                    notifySelf,
+                    isStory);
+            outputResult(outputWriter, results);
+        } catch (GroupNotFoundException | NotAGroupMemberException | GroupSendingNotAllowedException e) {
+            throw new UserErrorException(e.getMessage());
+        } catch (IOException e) {
+            throw new UnexpectedErrorException("Failed to send message: " + e.getMessage() + " (" + e.getClass()
+                    .getSimpleName() + ")", e);
+        } catch (UnregisteredRecipientException e) {
+            throw new UserErrorException("The user " + e.getSender().getIdentifier() + " is not registered.");
+        }
+    }
+}
+
