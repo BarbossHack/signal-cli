@@ -994,6 +994,29 @@ public class ManagerImpl implements Manager {
     }
 
     @Override
+    public SendMessageResults sendAdminDelete(
+            RecipientIdentifier.Single targetAuthor,
+            long targetSentTimestamp,
+            Set<RecipientIdentifier.Group> recipients,
+            final boolean notifySelf,
+            final boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException {
+        final var targetAuthorRecipientId = context.getRecipientHelper().resolveRecipient(targetAuthor);
+        final var authorServiceId = context.getRecipientHelper()
+                .resolveSignalServiceAddress(targetAuthorRecipientId)
+                .getServiceId();
+        final var adminDelete = new SignalServiceDataMessage.AdminDelete(authorServiceId, targetSentTimestamp);
+        final var messageBuilder = SignalServiceDataMessage.newBuilder().withAdminDelete(adminDelete);
+        if (isStory) {
+            messageBuilder.withStoryContext(new SignalServiceDataMessage.StoryContext(authorServiceId,
+                    targetSentTimestamp));
+        }
+        return sendMessage(messageBuilder,
+                recipients.stream().map(r -> (RecipientIdentifier) r).collect(Collectors.toSet()),
+                notifySelf);
+    }
+
+    @Override
     public SendMessageResults sendPinMessage(
             int pinDuration,
             RecipientIdentifier.Single targetAuthor,

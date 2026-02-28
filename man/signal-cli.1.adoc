@@ -287,6 +287,27 @@ One or more numbers to check.
 [--username [USERNAME ...]]::
 One or more usernames or username links to check.
 
+=== sendAdminDelete
+
+Send admin delete message for a previously received or sent message.
+Admin delete is used by group admins to remove messages from all group members.
+Only works with group recipients.
+
+*-g* GROUP, *--group-id* GROUP::
+Specify the recipient group ID in base64 encoding (required).
+
+*--notify-self*::
+If self is part of recipients/groups send a normal message, not a sync message.
+
+*-a* RECIPIENT, *--target-author* RECIPIENT::
+Specify the number of the author of the message to admin delete.
+
+*-t* TIMESTAMP, *--target-timestamp* TIMESTAMP::
+Specify the timestamp of the message to admin delete.
+
+*--story*::
+Admin delete a story instead of a normal message.
+
 === send
 
 Send a message to another user or group.

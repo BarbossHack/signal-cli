@@ -224,6 +224,14 @@ public interface Manager extends Closeable {
             final boolean isStory
     ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException;
 
+    SendMessageResults sendAdminDelete(
+            RecipientIdentifier.Single targetAuthor,
+            long targetSentTimestamp,
+            Set<RecipientIdentifier.Group> recipients,
+            boolean notifySelf,
+            boolean isStory
+    ) throws IOException, NotAGroupMemberException, GroupNotFoundException, GroupSendingNotAllowedException, UnregisteredRecipientException;
+
     SendMessageResults sendPinMessage(
             int pinDuration,
             RecipientIdentifier.Single targetAuthor,

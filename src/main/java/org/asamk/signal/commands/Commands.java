@@ -37,6 +37,7 @@ public class Commands {
         addCommand(new RemoveDeviceCommand());
         addCommand(new RemovePinCommand());
         addCommand(new RemoteDeleteCommand());
+        addCommand(new SendAdminDeleteCommand());
         addCommand(new SendCommand());
         addCommand(new SendContactsCommand());
         addCommand(new SendMessageRequestResponseCommand());
