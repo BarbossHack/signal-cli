@@ -13,6 +13,7 @@ import org.signal.storageservice.storage.protos.groups.Member;
 import org.signal.storageservice.storage.protos.groups.local.DecryptedGroup;
 import org.signal.storageservice.storage.protos.groups.local.EnabledState;
 import org.whispersystems.signalservice.api.push.DistributionId;
+import org.whispersystems.signalservice.api.push.SignalServiceAddress;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -150,6 +151,15 @@ public final class GroupInfoV2 extends GroupInfo {
         return group.pendingMembers.stream()
                 .map(m -> ServiceId.parseOrThrow(m.serviceIdBytes))
                 .map(recipientResolver::resolveRecipient)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<SignalServiceAddress> getPendingMemberAddresses() {
+        if (this.group == null) {
+            return Set.of();
+        }
+        return group.pendingMembers.stream()
+                .map(m -> new SignalServiceAddress(ServiceId.parseOrThrow(m.serviceIdBytes)))
                 .collect(Collectors.toSet());
     }
 

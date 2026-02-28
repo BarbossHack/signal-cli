@@ -476,10 +476,25 @@ class GroupV2Helper {
             throw new IOException("Cannot join a V2 group as self does not have a versioned profile");
         }
 
-        final var change = groupOperations.createAcceptInviteChange(profileKeyCredential);
+        // We need to accept the invite with the ACI or PNI that was used for the invitation
+        final var selfAddress = context.getRecipientHelper().resolveSignalServiceAddress(selfRecipientId);
+        final var selfServiceId = groupInfoV2.getPendingMemberAddresses()
+                .stream()
+                .filter(s -> s.matches(selfAddress))
+                .findFirst();
+        if (selfServiceId.isEmpty()) {
+            throw new IOException("Cannot find service ID for self to accept invite");
+        }
+        final var serviceId = selfServiceId.get().getServiceId();
 
-        final var aci = context.getRecipientHelper().resolveSignalServiceAddress(selfRecipientId).getServiceId();
-        change.sourceUserId(aci.toByteString());
+        final GroupChange.Actions.Builder change;
+        if (serviceId instanceof ACI) {
+            change = groupOperations.createAcceptInviteChange(profileKeyCredential);
+        } else {
+            change = groupOperations.createAcceptPniInviteChange(profileKeyCredential);
+        }
+
+        change.sourceUserId(serviceId.toByteString());
 
         return commitChange(groupInfoV2, change);
     }
