@@ -4,6 +4,8 @@
 
 **Attention**: Now requires Java 25
 
+Requires libsignal-client version 0.87.4.
+
 ### Breaking changes
 
 - Remove isRegistered method without parameters from Signal dbus interface, which always returned `true`

@@ -145,11 +145,8 @@ public class RecipientHelper {
         try {
             final var usernameLinkUrl = UsernameLinkUrl.fromUri(username);
             final var components = usernameLinkUrl.getComponents();
-            final var encryptedUsername = handleResponseException(dependencies.getUsernameApi()
-                    .getEncryptedUsernameFromLinkServerId(components.getServerId()));
-            final var link = new Username.UsernameLink(components.getEntropy(), encryptedUsername);
-
-            return Username.fromLink(link);
+            return handleResponseException(dependencies.getUsernameApi()
+                    .getDecryptedUsernameFromLinkServerIdAndEntropy(components.getServerId(), components.getEntropy()));
         } catch (UsernameLinkUrl.InvalidUsernameLinkException e) {
             return new Username(username);
         }
