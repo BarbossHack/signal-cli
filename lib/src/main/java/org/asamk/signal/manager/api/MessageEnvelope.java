@@ -3,6 +3,7 @@ package org.asamk.signal.manager.api;
 import org.asamk.signal.manager.groups.GroupUtils;
 import org.asamk.signal.manager.helper.RecipientAddressResolver;
 import org.asamk.signal.manager.storage.recipients.RecipientResolver;
+import org.asamk.signal.manager.util.MimeUtils;
 import org.signal.core.models.ServiceId;
 import org.signal.libsignal.metadata.ProtocolException;
 import org.whispersystems.signalservice.api.messages.SignalServiceAttachment;
@@ -37,6 +38,7 @@ import org.whispersystems.signalservice.api.messages.multidevice.ViewedMessage;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -128,10 +130,22 @@ public record MessageEnvelope(
 
         static Data from(
                 final SignalServiceDataMessage dataMessage,
+                Map<String, String> longTexts,
                 RecipientResolver recipientResolver,
                 RecipientAddressResolver addressResolver,
                 final AttachmentFileProvider fileProvider
         ) {
+            var body = dataMessage.getBody();
+            if (dataMessage.getAttachments().isPresent()) {
+                for (final var attachment : dataMessage.getAttachments().get()) {
+                    if (MimeUtils.LONG_TEXT.equals(attachment.getContentType()) && attachment.isPointer()) {
+                        final var longBody = longTexts.get(attachment.asPointer().getRemoteId().toString());
+                        if (longBody != null) {
+                            body = Optional.of(longBody);
+                        }
+                    }
+                }
+            }
             return new Data(dataMessage.getTimestamp(),
                     dataMessage.getGroupContext().map(GroupContext::from),
                     dataMessage.getStoryContext()
@@ -139,7 +153,7 @@ public record MessageEnvelope(
                                     recipientResolver,
                                     addressResolver)),
                     dataMessage.getGroupCallUpdate().map(GroupCallUpdate::from),
-                    dataMessage.getBody(),
+                    body,
                     dataMessage.getExpiresInSeconds(),
                     dataMessage.isExpirationUpdate(),
                     dataMessage.isViewOnce(),
@@ -621,12 +635,17 @@ public record MessageEnvelope(
 
         public static Edit from(
                 final SignalServiceEditMessage editMessage,
+                Map<String, String> longTexts,
                 RecipientResolver recipientResolver,
                 RecipientAddressResolver addressResolver,
                 final AttachmentFileProvider fileProvider
         ) {
             return new Edit(editMessage.getTargetSentTimestamp(),
-                    Data.from(editMessage.getDataMessage(), recipientResolver, addressResolver, fileProvider));
+                    Data.from(editMessage.getDataMessage(),
+                            longTexts,
+                            recipientResolver,
+                            addressResolver,
+                            fileProvider));
         }
     }
 
@@ -643,12 +662,13 @@ public record MessageEnvelope(
 
         public static Sync from(
                 final SignalServiceSyncMessage syncMessage,
+                Map<String, String> longTexts,
                 RecipientResolver recipientResolver,
                 RecipientAddressResolver addressResolver,
                 final AttachmentFileProvider fileProvider
         ) {
             return new Sync(syncMessage.getSent()
-                    .map(s -> Sent.from(s, recipientResolver, addressResolver, fileProvider)),
+                    .map(s -> Sent.from(s, longTexts, recipientResolver, addressResolver, fileProvider)),
                     syncMessage.getBlockedList().map(b -> Blocked.from(b, recipientResolver, addressResolver)),
                     syncMessage.getRead()
                             .map(r -> r.stream().map(rm -> Read.from(rm, recipientResolver, addressResolver)).toList())
@@ -677,6 +697,7 @@ public record MessageEnvelope(
 
             static Sent from(
                     SentTranscriptMessage sentMessage,
+                    Map<String, String> longTexts,
                     RecipientResolver recipientResolver,
                     RecipientAddressResolver addressResolver,
                     final AttachmentFileProvider fileProvider
@@ -692,9 +713,17 @@ public record MessageEnvelope(
                                         .toApiRecipientAddress())
                                 .collect(Collectors.toSet()),
                         sentMessage.getDataMessage()
-                                .map(message -> Data.from(message, recipientResolver, addressResolver, fileProvider)),
+                                .map(message -> Data.from(message,
+                                        longTexts,
+                                        recipientResolver,
+                                        addressResolver,
+                                        fileProvider)),
                         sentMessage.getEditMessage()
-                                .map(message -> Edit.from(message, recipientResolver, addressResolver, fileProvider)),
+                                .map(message -> Edit.from(message,
+                                        longTexts,
+                                        recipientResolver,
+                                        addressResolver,
+                                        fileProvider)),
                         sentMessage.getStoryMessage().map(s -> Story.from(s, fileProvider)));
             }
         }
@@ -993,6 +1022,7 @@ public record MessageEnvelope(
     public static MessageEnvelope from(
             SignalServiceEnvelope envelope,
             SignalServiceContent content,
+            Map<String, String> longTexts,
             RecipientResolver recipientResolver,
             RecipientAddressResolver addressResolver,
             final AttachmentFileProvider fileProvider,
@@ -1023,9 +1053,15 @@ public record MessageEnvelope(
             receipt = content.getReceiptMessage().map(Receipt::from);
             typing = content.getTypingMessage().map(Typing::from);
             data = content.getDataMessage()
-                    .map(dataMessage -> Data.from(dataMessage, recipientResolver, addressResolver, fileProvider));
-            edit = content.getEditMessage().map(s -> Edit.from(s, recipientResolver, addressResolver, fileProvider));
-            sync = content.getSyncMessage().map(s -> Sync.from(s, recipientResolver, addressResolver, fileProvider));
+                    .map(dataMessage -> Data.from(dataMessage,
+                            longTexts,
+                            recipientResolver,
+                            addressResolver,
+                            fileProvider));
+            edit = content.getEditMessage()
+                    .map(s -> Edit.from(s, longTexts, recipientResolver, addressResolver, fileProvider));
+            sync = content.getSyncMessage()
+                    .map(s -> Sync.from(s, longTexts, recipientResolver, addressResolver, fileProvider));
             call = content.getCallMessage().map(Call::from);
             story = content.getStoryMessage().map(s -> Story.from(s, fileProvider));
         } else {
