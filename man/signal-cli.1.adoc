@@ -262,6 +262,10 @@ Only works, if this is the primary device.
 Specify the uri contained in the QR code shown by the new device.
 You will need the full URI such as "sgnl://linkdevice?uuid=...&pub_key=..." (formerly "tsdevice:/?uuid=...") Make sure to enclose it in quotation marks for shells.
 
+=== listAccounts
+
+Show a list of registered accounts.
+
 === listDevices
 
 Show a list of linked devices.
@@ -405,6 +409,10 @@ Clear session state and send end session message.
 
 *--edit-timestamp*::
 Specify the timestamp of a previous message with the recipient or group to send an edited message.
+
+*--no-urgent*::
+Send the message without the urgent flag, so no push notification is triggered for the recipient.
+The message will still be delivered in real-time if the recipient's app is active.
 
 === sendPollCreate
 
@@ -585,6 +593,12 @@ Specify the recipient group ID in base64 encoding.
 *-u* USERNAME, *--username* USERNAME::
 Specify the recipient username or username link.
 
+*--note-to-self*::
+Send the reaction to self.
+
+*--notify-self*::
+If self is part of recipients/groups send a normal message, not a sync message.
+
 *-e* EMOJI, *--emoji* EMOJI::
 Specify the emoji, should be a single unicode grapheme cluster.
 
@@ -606,6 +620,9 @@ Send a read or viewed receipt to a previously received message.
 
 RECIPIENT::
 Specify the sender.
+
+*-u* USERNAME, *--username* USERNAME::
+Specify the recipient username or username link.
 
 *-t* TIMESTAMP, *--target-timestamp* TIMESTAMP::
 Specify the timestamp of the message to which to react.
@@ -653,7 +670,7 @@ In json mode this is outputted as one json object per line.
 Number of seconds to wait for new messages (negative values disable timeout).
 Default is 5 seconds.
 
-*--max-messages*::
+*--max-messages* MAX_MESSAGES::
 Maximum number of messages to receive, before returning.
 
 *--ignore-attachments*::
@@ -777,10 +794,10 @@ Find contacts with the given contact or profile name.
 
 *--detailed*::
 List the contacts with more details.
-If output=json, then this is always set
+If output=json, then this is always set.
 
 *--internal*::
-Include internal information that's normally not user visible
+Include internal information that's normally not user visible.
 
 === listIdentities
 
@@ -860,6 +877,18 @@ New note.
 *-e*, *--expiration* EXPIRATION_SECONDS::
 Set expiration time of messages (seconds).
 To disable expiration set expiration time to 0.
+
+=== updateDevice
+
+Update a linked device.
+Only works, if this is the primary device.
+
+*-d* DEVICE_ID, *--device-id* DEVICE_ID::
+Specify the device you want to update.
+Use listDevices to see the deviceIds.
+
+*-n* NAME, *--device-name* NAME::
+Specify a name to describe the given device.
 
 === removeContact
 
@@ -1081,6 +1110,10 @@ The challenge token from the failed send attempt.
 
 *--captcha* CAPTCHA::
 The captcha result, starting with signalcaptcha://
+
+=== version
+
+Show version information.
 
 == Examples
 
