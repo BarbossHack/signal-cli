@@ -90,7 +90,7 @@ pub trait Rpc {
     fn finish_link(
         &self,
         #[allow(non_snake_case)] deviceLinkUri: String,
-        #[allow(non_snake_case)] deviceName: String,
+        #[allow(non_snake_case)] deviceName: Option<String>,
     ) -> Result<Value, ErrorObjectOwned>;
 
     #[method(name = "listAccounts", param_kind = map)]

@@ -97,7 +97,7 @@ pub enum CliCommands {
     },
     Link {
         #[arg(short = 'n', long)]
-        name: String,
+        name: Option<String>,
     },
     ListAccounts,
     ListContacts {
