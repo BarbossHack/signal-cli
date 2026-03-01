@@ -83,9 +83,9 @@ jobs:
         env:
           SIGNAL_CLI_VER: ${{ steps.cli_ver.outputs.version }}
         run: |
-          chmod +x signal-cli-client/signal-cli-client
-          tar -czf signal-cli-${SIGNAL_CLI_VER}-Linux-client.tar.gz -C signal-cli-client signal-cli-client
-          rm -rf signal-cli-client/
+          chmod +x signal-cli-client-ubuntu/signal-cli-client
+          tar -czf signal-cli-${SIGNAL_CLI_VER}-Linux-client.tar.gz -C signal-cli-client-ubuntu signal-cli-client
+          rm -rf signal-cli-client-ubuntu/
 
 #      - name: Replace Windows lib
 #        env:
