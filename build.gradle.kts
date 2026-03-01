@@ -33,6 +33,7 @@ graalvmNative {
             buildArgs.add("-Dfile.encoding=UTF-8")
             buildArgs.add("-J-Dfile.encoding=UTF-8")
             buildArgs.add("-march=compatibility")
+            buildArgs.add("--enable-native-access=ALL-UNNAMED")
             resources.autodetect()
             if (System.getenv("GRAALVM_HOME") == null) {
                 toolchainDetection.set(true)
