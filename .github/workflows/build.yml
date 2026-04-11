@@ -11,15 +11,24 @@ permissions: {}
 
 jobs:
   build:
+    strategy:
+      matrix:
+        # The "reproducible" entry is used to build the project with the LTE Java version used in reproducible builds.
+        # More Java versions can be added to test compatibility, eg. "26".
+        java: ["reproducible", "26"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
       - name: Build
-        run: ./reproducible-builds/build.sh
+        run: |
+          if [ "${{ matrix.java }}" != "reproducible" ]; then
+            export OVERRIDE_JAVA_VERSION="${{ matrix.java }}"
+          fi
+          ./reproducible-builds/build.sh
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: signal-cli-build
+          name: signal-cli-${{ matrix.java }}-${{ github.job }}
           path: dist/*
 
   build-client:

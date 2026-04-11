@@ -11,9 +11,9 @@ VERSION=$(sed -n 's/\s*version\s*=\s*"\(.*\)".*/\1/p' build.gradle.kts | tail -n
 
 echo "Download latest release from GitHub..."
 
-curl -L --fail "https://github.com/AsamK/signal-cli/releases/download/v${VERSION}/signal-cli-${VERSION}.tar.gz" -o "github/signal-cli-${VERSION}.tar.gz"
-curl -L --fail "https://github.com/AsamK/signal-cli/releases/download/v${VERSION}/signal-cli-${VERSION}-Linux-native.tar.gz" -o "github/signal-cli-${VERSION}-Linux-native.tar.gz"
-curl -L --fail "https://github.com/AsamK/signal-cli/releases/download/v${VERSION}/signal-cli-${VERSION}-Linux-client.tar.gz" -o "github/signal-cli-${VERSION}-Linux-client.tar.gz"
+curl -L --fail "https://github.com/BarbossHack/signal-cli/releases/download/v${VERSION}/signal-cli-${VERSION}.tar.gz" -o "github/signal-cli-${VERSION}.tar.gz"
+curl -L --fail "https://github.com/BarbossHack/signal-cli/releases/download/v${VERSION}/signal-cli-${VERSION}-Linux-native.tar.gz" -o "github/signal-cli-${VERSION}-Linux-native.tar.gz"
+curl -L --fail "https://github.com/BarbossHack/signal-cli/releases/download/v${VERSION}/signal-cli-${VERSION}-Linux-client.tar.gz" -o "github/signal-cli-${VERSION}-Linux-client.tar.gz"
 
 ./reproducible-builds/build.sh
 
@@ -30,6 +30,9 @@ reproducible=true
 for file in $(cd github && find . -type f); do
 	if diff "github/$file" "dist/$file" >/dev/null 2>&1; then
 		echo -e "\e[32m[+] '$(basename "$file")' matches!\e[0m"
+	elif [[ "$file" =~ "native" ]]; then
+		echo -e "\e[33m[-] '$(basename "$file")' doesn't match! (not supported yet)\e[0m"
+		reproducible=false
 	else
 		echo -e "\e[31m[-] '$(basename "$file")' doesn't match!\e[0m"
 		reproducible=false
